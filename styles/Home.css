@@ -5,10 +5,24 @@
   font-family: Arial, sans-serif;
 }
 
+/* ===============================
+   Root + Body (SCROLL SAFE)
+   =============================== */
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
   background: #000;
   color: white;
-  overflow: hidden;
+
+  /* ✅ allow scrolling on iPhone */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
   transition: opacity 0.6s ease;
 }
 
@@ -34,19 +48,21 @@ body {
   filter: blur(2px);
   transform: scale(1.3);
   max-width: 90vw;
-   max-height: 90vh;
+  max-height: 90vh;
 }
 
+/* subtle overlay, NOT blocking scroll */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   background: linear-gradient(
-                   to bottom,
-                   rgba(0,0,0,0.05),
-                   rgba(0,0,0,0.15)
-                 );
+    to bottom,
+    rgba(0,0,0,0.05),
+    rgba(0,0,0,0.15)
+  );
   z-index: -1;
+  pointer-events: none;
 }
 
 body.fade-out {
@@ -58,18 +74,23 @@ body.fade-out {
    =============================== */
 
 .page {
-  min-height: 100vh;
+  min-height: 100svh; /* ✅ iOS-safe viewport */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+
   padding-top: 12vh;
-  padding-bottom: calc(60px + env(safe-area-inset-bottom));
-  align-items: center;
-  gap: 25px;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
   padding-left: 20px;
   padding-right: 20px;
+
+  align-items: center;
+  gap: 25px;
 }
 
+/* ===============================
+   Title
+   =============================== */
 
 .title-box {
   display: inline-flex;
@@ -97,6 +118,10 @@ body.fade-out {
   opacity: 0.85;
 }
 
+/* ===============================
+   Button
+   =============================== */
+
 .next-btn {
   padding: 14px 34px;
   border: none;
@@ -106,15 +131,23 @@ body.fade-out {
   font-size: 18px;
   cursor: pointer;
   margin-top: 10px;
+
   border: 2px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 25px rgba(255, 75, 110, 0.45),
-  inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+
+  box-shadow:
+    0 8px 25px rgba(255, 75, 110, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .next-btn:active {
   transform: scale(0.96);
 }
+
+/* ===============================
+   Reel Wrapper
+   =============================== */
 
 .reel-wrapper {
   display: flex;
@@ -125,16 +158,18 @@ body.fade-out {
 }
 
 /* ===============================
-   Reels
+   Reels (Landscape / Desktop)
    =============================== */
 
 .reel {
   width: 90vw;
   max-width: 900px;
   height: 120px;
+
   overflow: hidden;
   background: rgba(0,0,0,0.72);
   position: relative;
+
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -208,29 +243,22 @@ body.fade-out {
 }
 
 /* ===============================
-   Vertical mode (portrait)
+   Portrait Mode (iPhone)
    =============================== */
 
 @media (orientation: portrait) {
 
   .page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 6vh;
-    padding-bottom: calc(60px + env(safe-area-inset-bottom));
-    align-items: center;
-    gap: 25px;
-    padding-left: 20px;
-    padding-right: 20px;
+    min-height: auto; /* ✅ allow natural scroll */
+    padding-top: 2vh;
+    padding-bottom: calc(50px + env(safe-area-inset-bottom));
   }
-
 
   .reel-wrapper {
     flex-direction: row;
     justify-content: center;
-    height: 60vh;
+    align-items: flex-start;
+    height: auto; /* ✅ no lock */
   }
 
   .reel {

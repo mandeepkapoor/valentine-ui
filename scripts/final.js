@@ -1,8 +1,30 @@
+/* ===============================
+   TAP TO REVEAL LOGIC
+================================ */
+
+const revealOverlay = document.getElementById("revealOverlay");
+
+function revealPage() {
+  revealOverlay.classList.add("hidden");
+
+  // unlock audio + start heartbeat
+  unlockAudio();
+
+  // prevent future clicks
+  revealOverlay.removeEventListener("click", revealPage);
+}
+
+revealOverlay.addEventListener("click", revealPage);
+revealOverlay.addEventListener("touchstart", revealPage);
+
+
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const helpText = document.getElementById("helpText");
 
-/* NO button */
+/* ===============================
+   NO BUTTON
+================================ */
 
 function moveNoButton() {
   const x = Math.random() * (window.innerWidth - 120);
@@ -19,16 +41,19 @@ function moveNoButton() {
 
 function showHelpText() {
   helpText.style.opacity = 1;
-  setTimeout(() => helpText.style.opacity = 0, 1200);
+  setTimeout(() => (helpText.style.opacity = 0), 1200);
 }
 
 function shakeButton() {
-  noBtn.animate([
-    { transform: "translateX(0)" },
-    { transform: "translateX(-6px)" },
-    { transform: "translateX(6px)" },
-    { transform: "translateX(0)" }
-  ], { duration: 300 });
+  noBtn.animate(
+    [
+      { transform: "translateX(0)" },
+      { transform: "translateX(-6px)" },
+      { transform: "translateX(6px)" },
+      { transform: "translateX(0)" }
+    ],
+    { duration: 300 }
+  );
 }
 
 noBtn.addEventListener("mouseenter", moveNoButton);
@@ -37,53 +62,97 @@ noBtn.addEventListener("touchstart", e => {
   moveNoButton();
 });
 
-/* HAPTIC */
+/* ===============================
+   HAPTIC
+================================ */
 
 function vibrate() {
-  if (navigator.vibrate) navigator.vibrate(30);
+  if (navigator.vibrate) {
+    navigator.vibrate([20, 40, 20]);
+  }
 }
 
-/* HEARTBEAT SOUND */
+/* ===============================
+   HEARTBEAT AUDIO (DOUBLE PULSE)
+================================ */
 
-let audioUnlocked = false;
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
+let audioUnlocked = false;
+let heartbeatInterval;
 
+/* Unlock audio on first interaction (iOS requirement) */
 function unlockAudio() {
   if (audioUnlocked) return;
+
   audioCtx = new AudioContext();
   audioUnlocked = true;
+
+  startHeartbeat();
 }
 
-document.addEventListener("click", unlockAudio);
-document.addEventListener("touchstart", unlockAudio);
+/* Attach to any interaction */
+["click", "touchstart", "mousedown"].forEach(evt => {
+  document.addEventListener(evt, unlockAudio, { once: true });
+});
 
+/* Desktop: try autoplay */
+window.addEventListener("load", () => {
+  try {
+    audioCtx = new AudioContext();
+    audioUnlocked = true;
+    startHeartbeat();
+  } catch {
+    /* iOS will unlock on interaction */
+  }
+});
+
+/* Double pulse: LUB + DUB */
 function playHeartbeat() {
   if (!audioUnlocked) return;
 
+  const now = audioCtx.currentTime;
+
+  // LUB (stronger)
+  pulse(now, 72, 1.0);
+
+  // DUB (softer, delayed)
+  pulse(now + 0.18, 58, 0.6);
+}
+
+function pulse(time, frequency, volume) {
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
-  osc.frequency.value = 90;
   osc.type = "sine";
+  osc.frequency.value = frequency;
 
-  gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.4, audioCtx.currentTime + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+  gain.gain.setValueAtTime(0.001, time);
+  gain.gain.exponentialRampToValueAtTime(volume, time + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.3);
+  osc.start(time);
+  osc.stop(time + 0.4);
 }
 
-setInterval(() => {
+function startHeartbeat() {
+  if (heartbeatInterval) return;
+
   playHeartbeat();
   vibrate();
-}, 1200);
 
-/* CONFETTI */
+  heartbeatInterval = setInterval(() => {
+    playHeartbeat();
+    vibrate();
+  }, 1200);
+}
+
+/* ===============================
+   CONFETTI
+================================ */
 
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
@@ -106,7 +175,7 @@ function fireConfetti() {
       vy: Math.random() * -10 - 6,
       size: Math.random() * 4 + 2,
       life: 160,
-      color: `hsl(${Math.random()*360},100%,65%)`
+      color: `hsl(${Math.random() * 360},100%,65%)`
     });
   }
 }

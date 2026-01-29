@@ -12,6 +12,11 @@ function addImage(track, file) {
   const img = document.createElement("img");
   img.src = "images/gallery/" + file;
 
+  // 🚀 performance boosts
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.fetchPriority = "low";
+
   frame.appendChild(img);
   track.appendChild(frame);
 }
