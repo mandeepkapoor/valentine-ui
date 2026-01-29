@@ -1,0 +1,268 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #000;
+  color: white;
+  overflow: hidden;
+}
+
+/* ===============================
+   Blurred collage background
+   =============================== */
+
+#bg-collage {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: #000;
+}
+
+#bg-collage img {
+  position: absolute;
+  width: 220px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  opacity: 1;
+  filter: blur(2px);
+  transform: scale(1.3);
+  max-width: 90vw;
+   max-height: 90vh;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+                   to bottom,
+                   rgba(0,0,0,0.05),
+                   rgba(0,0,0,0.15)
+                 );
+  z-index: -1;
+}
+
+/* ===============================
+   Layout
+   =============================== */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 12vh;
+  padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  align-items: center;
+  gap: 25px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+
+.title-box {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  background: rgba(0, 0, 0, 0.45);
+  padding: 14px 22px;
+  border-radius: 16px;
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.title {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 15px;
+  opacity: 0.85;
+}
+
+.next-btn {
+  padding: 14px 34px;
+  border: none;
+  border-radius: 30px;
+  background: #ff4b6e;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  margin-top: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 25px rgba(255, 75, 110, 0.45),
+  inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.next-btn:active {
+  transform: scale(0.96);
+}
+
+.reel-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  align-items: center;
+}
+
+/* ===============================
+   Reels
+   =============================== */
+
+.reel {
+  width: 90vw;
+  max-width: 900px;
+  height: 120px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.72);
+  position: relative;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.reel::before,
+.reel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0 12px,
+    #000 12px 18px
+  );
+  z-index: 3;
+}
+
+.reel::before { top: 4px; }
+.reel::after  { bottom: 4px; }
+
+/* ===============================
+   Track
+   =============================== */
+
+.track {
+  display: flex;
+  gap: 12px;
+  will-change: transform;
+}
+
+.frame {
+  width: 140px;
+  height: 85px;
+  background: #000;
+  padding: 4px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #333;
+  flex-shrink: 0;
+}
+
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* ===============================
+   Continuous horizontal motion
+   =============================== */
+
+.reel-a .track {
+  animation: scroll-left 28s linear infinite;
+}
+
+.reel-b .track {
+  animation: scroll-right 28s linear infinite;
+}
+
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes scroll-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* ===============================
+   Vertical mode (portrait)
+   =============================== */
+
+@media (orientation: portrait) {
+
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 6vh;
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+    align-items: center;
+    gap: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+
+  .reel-wrapper {
+    flex-direction: row;
+    justify-content: center;
+    height: 60vh;
+  }
+
+  .reel {
+    width: 130px;
+    height: 60vh;
+    flex-direction: column;
+  }
+
+  .reel::before,
+  .reel::after {
+    display: none;
+  }
+
+  .track {
+    flex-direction: column;
+  }
+
+  .frame {
+    width: 110px;
+    height: 70px;
+  }
+
+  .reel-a .track {
+    animation: scroll-up 30s linear infinite;
+  }
+
+  .reel-b .track {
+    animation: scroll-down 30s linear infinite;
+  }
+
+  @keyframes scroll-up {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-50%); }
+  }
+
+  @keyframes scroll-down {
+    from { transform: translateY(-50%); }
+    to   { transform: translateY(0); }
+  }
+}
