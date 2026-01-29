@@ -82,3 +82,13 @@ window.addEventListener("resize", () => {
 });
 
 document.addEventListener("DOMContentLoaded", loadReels);
+
+const continueBtn = document.getElementById("continueBtn");
+
+continueBtn.addEventListener("click", () => {
+  document.body.classList.add("fade-out");
+
+  setTimeout(() => {
+    window.location.href = "Final.html";
+  }, 600);
+});

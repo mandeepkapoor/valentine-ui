@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Be My Valentine ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/final.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1 class="question">Will you be my Valentine? 💖</h1>
+
+    <div class="ecg-line"></div>
+
+    <div class="heart-wrapper">
+        <svg viewBox="0 0 512 512" class="heart-svg">
+            <defs>
+                <clipPath id="heartClip">
+                    <path d="M256 464s-40-24-80-56C96 344 32 288 32 192 32 112 96 64 160 64c40 0 72 24 96 56 24-32 56-56 96-56 64 0 128 48 128 128 0 96-64 152-144 216-40 32-80 56-80 56z"/>
+                </clipPath>
+            </defs>
+
+            <image href="images/gallery/image1.jpeg"
+                   width="512"
+                   height="512"
+                   clip-path="url(#heartClip)"
+                   preserveAspectRatio="xMidYMid slice"/>
+
+            <path d="M256 464s-40-24-80-56C96 344 32 288 32 192 32 112 96 64 160 64c40 0 72 24 96 56 24-32 56-56 96-56 64 0 128 48 128 128 0 96-64 152-144 216-40 32-80 56-80 56z"
+                  fill="none"
+                  stroke="#ff4b6e"
+                  stroke-width="14"/>
+        </svg>
+    </div>
+
+    <div class="buttons">
+        <button class="yes" id="yesBtn">Yes 😍</button>
+        <button class="no" id="noBtn">No 🙃</button>
+    </div>
+
+    <div class="help-text" id="helpText">Not today 😝</div>
+
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script src="scripts/final.js"></script>
+</body>
+</html>
