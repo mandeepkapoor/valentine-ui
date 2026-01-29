@@ -114,10 +114,12 @@ function playHeartbeat() {
   const now = audioCtx.currentTime;
 
   // LUB (stronger)
-  pulse(now, 72, 1.0);
+  pulse(now, 72, 2.0);
 
   // DUB (softer, delayed)
-  pulse(now + 0.18, 58, 0.6);
+  pulse(now + 0.18, 58, 1.0);
+
+  screenShake()
 }
 
 function pulse(time, frequency, volume) {
@@ -203,3 +205,12 @@ yesBtn.addEventListener("click", () => {
   fireConfetti();
   vibrate();
 });
+
+
+function screenShake() {
+  const container = document.querySelector(".container");
+
+  container.classList.remove("shake");
+  void container.offsetWidth; // force reflow
+  container.classList.add("shake");
+}
